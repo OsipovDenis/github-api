@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Github api</title>
+  <style>
+
+    body {
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .searchRepsWrap {
+      float: left;
+      width: 50%;
+    }
+
+    .makeGistWrap {
+      float: right;
+      width: 50%;
+    }
+
+    ul{
+      list-style: none;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="searchRepsWrap">
+    <input type="text" id="getReps">
+    <div id="results"></div>
+  </div>
+
+  <div class="makeGistWrap">
+    <div class="inputWrap">
+      <input type="text" id="gistName" value="Get gist name .txt">
+    </div>
+    <div class="textWrap">
+      <textarea name="gist" cols="30" rows="10" id="gist">Get gist code</textarea>
+    </div>
+    <button id="createGist">Create GIST!</button>
+    <div id="resultsGist">
+    </div>
+  </div>
+
+
+
+  <script type="text/template" id="templateSearch">
+    <% _.forEach(arr, function(item) { %>
+      <ul class="item">
+        <li><b>Full Name:</b>
+          <%-item.full_name%>
+        </li>
+        <li><b>Description:</b>
+          <%-item.description.slice(0, 40) + "..."%>
+        </li>
+        <li><b>Language:</b>
+          <%-item.language%>
+        </li>
+        <li><b>Link:</b>
+          <a href="<%-item.html_url%>">
+            <%-item.html_url%>
+          </a>
+        </li>
+      </ul>
+      <% }); %>
+  </script>
+
+  <script data-require="lodash.js@4.11.1" data-semver="4.11.1" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.js"></script>
+  <script src="main.js"></script>
+
+  <script>
+    let templateSearch = document.getElementById('templateSearch').innerHTML,
+      compiledTemplateSearch = _.template(templateSearch);
+
+    let myInput = new classInput({
+      input: document.getElementById('getReps'),
+      resultsOutput: document.getElementById('results'),
+      compiledTemplate: compiledTemplateSearch
+    });
+
+    let myGist = new classGist({
+      gistName: document.getElementById('gistName'),
+      gistText: document.getElementById('gist'),
+      btnCreateGist: document.getElementById('createGist'),
+      resultsOutput: document.getElementById('resultsGist')
+    });
+  </script>
+</body>
+
+</html>
