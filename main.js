@@ -1,4 +1,5 @@
 //Класс для input'a
+//Умеет искать нужный репозиторий и выводить первые 3 популярных
 class classInput {
   constructor(options) {
     this.input = options.input;
@@ -40,50 +41,5 @@ class classInput {
     this.resultsOutput.innerHTML = this.compiledTemplate({
       arr: data
     });
-  }
-}
-
-//Класс для Gist'a
-class classGist {
-  constructor(options) {
-    this.gistName = options.gistName;
-    this.gistText = options.gistText;
-    this.btnCreateGist = options.btnCreateGist;
-    this.resultsOutput = options.resultsOutput;
-
-    this.btnCreateGist.onclick = this.addGist.bind( this );
-  }
-
-  addGist() {
-    let self = this;
-
-    //Тело объекта gist'a, который отправляем на сервер.
-    let gist = (function() {
-      return {
-        "description": "howework github api",
-        "public": true,
-        "files": {
-          [self.gistName.value]: {
-            "content": self.gistText.value
-          }
-        }
-      }
-    })();
-
-    fetch('https://api.github.com/gists', {
-      method: 'POST',
-      body: JSON.stringify(gist)
-    }).then(( response ) => {
-      return response.json();
-    }).then(( response ) => {
-      this.render(response);
-    }).catch( (error ) => {
-      alert(error);
-    })
-  }
-
-  render(data) {
-    // console.log( data.html_url );
-    this.resultsOutput.innerHTML = `<a href="${data.html_url}">${data.html_url}</a>`;
   }
 }

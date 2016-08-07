@@ -2,52 +2,66 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Github api</title>
-  <style>
-
-    body {
-      text-align: center;
-      font-size: 20px;
-    }
-
-    .searchRepsWrap {
-      float: left;
-      width: 50%;
-    }
-
-    .makeGistWrap {
-      float: right;
-      width: 50%;
-    }
-
-    ul{
-      list-style: none;
-    }
-
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 
 <body>
+  <nav class="navbar navbar-inverse">
 
-  <div class="searchRepsWrap">
-    <input type="text" id="getReps">
-    <div id="results"></div>
+    <form class="form-inline" role="form" id="formLogin">
+      <div class="form-group">
+        <label class="sr-only" for="InputEmail">Email</label>
+        <input type="email" class="form-control" id="Login" placeholder="Введите логин">
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="InputPassword">Password</label>
+        <input type="password" class="form-control" id="Password" required="required" placeholder="Пароль">
+      </div>
+      <div class="checkbox">
+      </div>
+      <button type="submit" class="btn btn-default" id="btnSendLogin">Войти</button>
+    </form>
+
+    <img src="/" alt="Аватар" class="img-circle" id="avatar" width="80px" height="80px" style="display: none;">
+    <button type="submit" class="btn btn-default" id="Logout" style="display: none;">Выйти</button>
+  </nav>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Here you can search 3 most popular repositories on GITHUB</h3>
+        <div class="searchRepsWrap">
+          <input type="text" class="form-control" id="getReps">
+          <div id="results"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h3>Here you can create your new gist or show your old gists</h3>
+        <div class="makeGistWrap">
+          <div class="inputWrap">
+            <input type="text" id="gistName" class="form-control" value="Get gist name .txt">
+          </div>
+          <br>
+          <div class="descrWrap">
+            <input type="text" id="description" class="form-control" name="description" value="description">
+          </div>
+          <br>
+          <div class="textWrap">
+            <textarea name="gist" cols="30" rows="10" class="form-control" id="gist">Get gist code</textarea>
+          </div>
+          <br>
+          <button id="createGist">Create GIST!</button>
+          <div id="resultsGist">
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="makeGistWrap">
-    <div class="inputWrap">
-      <input type="text" id="gistName" value="Get gist name .txt">
-    </div>
-    <div class="textWrap">
-      <textarea name="gist" cols="30" rows="10" id="gist">Get gist code</textarea>
-    </div>
-    <button id="createGist">Create GIST!</button>
-    <div id="resultsGist">
-    </div>
-  </div>
-
-
 
   <script type="text/template" id="templateSearch">
     <% _.forEach(arr, function(item) { %>
@@ -70,12 +84,33 @@
       <% }); %>
   </script>
 
+  <script type="text/template" id="templateGist">
+    <% _.forEach(arr, function(item) { %>
+      <ul class="item">
+        <li><b>Description:</b>
+          <%-item.description%>
+        </li>
+        <li><b>Public:</b>
+          <%-item.public%>
+        </li>
+        <li><b>Url:</b>
+          <a href="<%-item.html_url%>">
+            <%-item.html_url%>
+          </a>
+        </li>
+      </ul>
+      <% }); %>
+  </script>
+
   <script data-require="lodash.js@4.11.1" data-semver="4.11.1" src="https://cdn.jsdelivr.net/lodash/4.11.1/lodash.js"></script>
   <script src="main.js"></script>
+  <script src="authorization.js"></script>
 
   <script>
     let templateSearch = document.getElementById('templateSearch').innerHTML,
-      compiledTemplateSearch = _.template(templateSearch);
+      compiledTemplateSearch = _.template(templateSearch),
+      templateGist = document.getElementById('templateGist').innerHTML,
+      compiledTemplateGist = _.template(templateGist);
 
     let myInput = new classInput({
       input: document.getElementById('getReps'),
@@ -83,11 +118,21 @@
       compiledTemplate: compiledTemplateSearch
     });
 
-    let myGist = new classGist({
+    let myPerson = new authorization({
+      login: document.getElementById('Login'),
+      password: document.getElementById('Password'),
+      submit: document.getElementById('btnSendLogin'),
+      btnLogout: document.getElementById('Logout'),
+      formLogin: document.getElementById('formLogin'),
+      avatar: document.getElementById('avatar'),
+
+      resultsOutput: document.getElementById('resultsGist'),
+      compiledTemplate: compiledTemplateGist,
+
       gistName: document.getElementById('gistName'),
+      gistDescr: document.getElementById('description'),
       gistText: document.getElementById('gist'),
-      btnCreateGist: document.getElementById('createGist'),
-      resultsOutput: document.getElementById('resultsGist')
+      btnCreateGist: document.getElementById('createGist')
     });
   </script>
 </body>
